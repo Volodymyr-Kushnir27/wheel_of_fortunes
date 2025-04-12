@@ -3,7 +3,7 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
 export default defineConfig({
-  base: '/wheel_of_fortune/',
+  base: '/wheel_of_fortunes/',
   plugins: [react()],
 });
 
