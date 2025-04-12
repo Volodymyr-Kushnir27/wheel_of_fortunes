@@ -1,6 +1,6 @@
 {
-  "homepage": "https://github.com/Volodymyr-Kushnir27/wheel_of_fortune" ,
-  "name": "fortune",
+  "homepage": "https://github.com/Volodymyr-Kushnir27/wheel_of_fortunes" ,
+  "name": "fortunes",
   "private": true,
   "version": "0.0.0",
   "type": "module",
