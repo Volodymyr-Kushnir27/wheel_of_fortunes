@@ -1,94 +1,78 @@
 header {
   display: grid;
-  grid-template-columns: 15% 60% 20%;
-  grid-column-gap: 25px;
-  align-items: center;
-  padding: 20px;
-  background-color: blue;
-  height: auto;
-}
-
-.logo {
-  max-width: 100%;
-  object-fit: cover;
-  display: block;
-  max-width: 8vw;
-}
-
-.logo img {
-  max-width: 100%; 
-  max-height: 100%; 
-  object-fit: cover; 
-  display: block; 
-}
-
-.name {
-  display: flex;
-  justify-content: center;
-  align-items: center; 
-  font-family: "Times New Roman", Times, serif; 
-  font-size: 5vw;
-}
-
-.h1 {
-  display: flex;
-  justify-content: center; 
-  align-items: center; 
-  font-family: "Times New Roman", Times, serif; 
+  grid-template-columns: 5% 95% ; /* Перша колонка для іконок менша, друга для тексту більша */
+  align-items: center; /* Вирівнювання по вертикалі */
+  height: 100px; /* Висота header */
+  background-color: white;
+  padding: 10px;
 }
 
 .social-icons {
   display: flex;
-  justify-content: flex-end;
-  max-width: 100%; 
-  height: 4vw;
-  overflow: hidden;
-  gap: 10px;
+  gap: 20px; /* Відступ між іконками */
+  justify-content: start; /* Центрування іконок по горизонталі */
+  align-items: center; /* Центрування по вертикалі */
 }
 
 .social-icons img {
-  max-width: 100%; 
-  max-height: 100%; 
-  object-fit: cover; 
-  display: block; 
+  width: clamp(30px, 5vw, 30px); /* Пропорційне зменшення іконок від 30px до 50px */
+  height: auto;
 }
 
-.social-icons a {
-  margin-left: 10px;
-  color: #333;
-  font-size: 24px;
+.name {
+  display: flex;
+  white-space: nowrap; /* Запобігання переносу тексту */
+  overflow: hidden; /* Текст не виходить за межі контейнера */
+  justify-content: center;
+  align-items: center;
 }
 
+.name h1 {
+  font-size: clamp(16px, 20vw, 70px); /* Адаптивний розмір тексту: мінімум 16px, максимум 36px */
+  margin: 0;
+  color: rgb(255, 1, 1);
+  font-family: Times New Roman, Times, serif;
+  font-weight: 500; 
+}
 
-  
-  
-/* Медіа-запити для адаптивності */
+/* Адаптивність для середніх екранів */
 @media (max-width: 768px) {
   header {
-    grid-template-columns: 1fr;
-    row-gap: 10px;
-    justify-items: center;
-    text-align: center;
+    grid-template-columns: 1fr 2fr; /* Більш рівномірне співвідношення колонок */
   }
 
-  .logo {
-    align-items: center;
-    object-fit: cover;
-    display: block;
+  .social-icons img {
+    width: clamp(45px, 8vw, 60px); /* Менший розмір іконок на середніх екранах */
+  } 
+  .social-icons {
+    display: flex;
+    gap: 5px;
+    justify-content: start;
   }
 
-  .background {
-    margin-top: 20px;
-    max-width: 100%;
+  .name h1 {
+    font-size: clamp(24px, 10vw, 40px); /* Менший розмір тексту для середніх екранів */
+  }
+}
+
+/* Адаптивність для мобільних пристроїв */
+@media (max-width: 480px) {
+  header {
+    grid-template-columns: 15% 85%; /* Одна колонка на маленьких екранах */
+    text-align: center; /* Центрування тексту для мобільних пристроїв */
   }
 
   .social-icons {
     display: flex;
-    gap: 20px;
+    gap: 5px;
+    justify-content: start;
   }
 
   .social-icons img {
-    width: auto;
-    height: auto;
+    width: clamp(20px, 3vw, 30px); /* Пропорційне зменшення іконок для мобільних пристроїв */
+  }
+
+  .name h1 {
+    font-size: clamp(24px, 18vw, 45px); /* Ще менший розмір тексту для мобільних пристроїв */
   }
 }

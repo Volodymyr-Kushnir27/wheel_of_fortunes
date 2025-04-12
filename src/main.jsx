@@ -5,10 +5,10 @@ import Header from './Header.jsx'
 import WheelOfFortune from './Fortun.jsx'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-<>
-<Header/>
+<div>
+
 <WheelOfFortune/>
-</>
+</div>
  
  
 

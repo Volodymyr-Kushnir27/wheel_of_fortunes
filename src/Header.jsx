@@ -8,12 +8,9 @@ function Header() {
         <>
 
             <header>
-                <div className="logo">
-                    <img src={logo} alt="Логотип" />
-                </div>
-                <div className="name">
-                    <h1> PERFUMS BAR</h1>
-                </div>
+                    {/* <div className="logo">
+                        <img src={logo} alt="Логотип" />
+                    </div> */}
                 <div className="social-icons">
                     <a href="https://www.instagram.com/perfumsbar_odessa/" target="_blank" rel="noopener noreferrer">
                         <img src={instagram} alt="Instagram Логотип" className="instagram" />
@@ -22,6 +19,10 @@ function Header() {
                         <img src={tik} alt="TikTok Логотип" className="tik-tok" />
                     </a>
                 </div>
+                    <div className="name">
+                        <h1> PERFUMS BAR</h1>
+                    </div>
+                
 
 
             </header>
