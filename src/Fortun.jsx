@@ -12,7 +12,7 @@ const WheelOfFortune = () => {
     'ЗНИЖКА 10%', 'ФЛАКОН В ПОДАРУНОК', 'ЗНИЖКА 20%', 'СЕРТИФІКАТ 200грн', 'ЗНИЖКА 15%', '5мл В ПОДАРУНОК', 'ЗНИЖКА 5%'
   ];
 
-  const weights = [30, 10, 5, 10, 15, 10, 20];
+  const weights = [30, 0, 15, 15, 30, 10, 0];
   const segmentAngle = 360 / segments.length; // Кут для кожного сегмента
 
   const getWeightedRandomSegment = () => {
