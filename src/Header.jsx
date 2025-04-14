@@ -1,5 +1,5 @@
 import './App.css'
-import logo from '/image/logo.png'
+// import logo from '/image/logo.png'
 import instagram from '/image/instagram.png'
 import tik from '/image/tik-tok.webp'
 function Header() {
