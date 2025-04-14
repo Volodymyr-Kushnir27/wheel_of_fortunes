@@ -7,7 +7,7 @@ const segments = [
   'ЗНИЖКА 15%', '5мл В ПОДАРУНОК', 'ЗНИЖКА 5%'
 ];
 
-const weights = [30, 0, 15, 15, 30, 10, 0];
+const weights = [30, 0, 15, 15, 30, 10, 0]; // Відповідність шансів для кожного сегмента
 
 const getSegmentAngles = (weights) => {
   const total = weights.reduce((a, b) => a + b, 0);
@@ -30,6 +30,21 @@ const getSegmentAngles = (weights) => {
 
 const segmentAngles = getSegmentAngles(weights);
 
+const getWeightedRandomIndex = () => {
+  const totalWeight = weights.reduce((acc, weight) => acc + weight, 0);
+  const randomNum = Math.random() * totalWeight;
+
+  let cumulativeWeight = 0;
+  for (let i = 0; i < weights.length; i++) {
+    cumulativeWeight += weights[i];
+    if (randomNum < cumulativeWeight) {
+      return i;
+    }
+  }
+
+  return weights.length - 1;
+};
+
 const WheelOfFortune = () => {
   const [rotation, setRotation] = useState(0);
   const [isSpinning, setIsSpinning] = useState(false);
@@ -51,36 +66,21 @@ const WheelOfFortune = () => {
     }
   }, []);
 
-  const getWeightedRandomSegment = () => {
-    const totalWeight = weights.reduce((acc, weight) => acc + weight, 0);
-    const randomNum = Math.random() * totalWeight;
-
-    let cumulativeWeight = 0;
-    for (let i = 0; i < weights.length; i++) {
-      cumulativeWeight += weights[i];
-      if (randomNum <= cumulativeWeight) {
-        return segments[i];
-      }
-    }
-  };
-
   const handleSpin = () => {
     if (isSpinning || hasSpun) return;
 
     setIsSpinning(true);
 
-    const winningSegment = getWeightedRandomSegment();
+    const winningIndex = getWeightedRandomIndex();
+    const winningSegment = segments[winningIndex];
     setSelectedSegment(winningSegment);
     localStorage.setItem('winningSegment', winningSegment);
 
-    const winningIndex = segments.indexOf(winningSegment);
-    const segmentData = segmentAngles[winningIndex];
-
     const fullSpins = 12;
-    const targetAngle = 360 - segmentData.midAngle;
-    const finalRotation = (fullSpins * 360) + targetAngle;
+    // Виправлення: використовуємо startAngle для правильного позиціонування виграшного сегмента
+    const targetAngle = fullSpins * 360 - segmentAngles[winningIndex].startAngle;
 
-    setRotation(prev => prev + finalRotation);
+    setRotation(targetAngle);
     setHasSpun(true);
 
     setTimeout(() => {
@@ -124,6 +124,5 @@ const WheelOfFortune = () => {
     </div>
   );
 };
-localStorage.removeItem('winningSegment');
 
 export default WheelOfFortune;
