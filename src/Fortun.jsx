@@ -3,19 +3,19 @@ import './Fortun.css';
 import logo from '/image/logo.png';
 
 const segments = [
-  'ЗНИЖКА 10%', 'ФЛАКОН В ПОДАРУНОК', 'ЗНИЖКА 20%', 'СЕРТИФІКАТ 200грн',
+  'ЗНИЖКА 10%', 'ФЛАКОН В ПОДАРУНОК', 'ЗНИЖКА 20%', 'СЕРТИФІКАТ 200грн (-20% від сумми)',
   'ЗНИЖКА 15%', '5мл В ПОДАРУНОК', 'ЗНИЖКА 5%'
 ];
 
-const weights = [30, 0, 15, 15, 30, 10, 0]; // Відповідність шансів для кожного сегмента
+const weights = [30, 0, 15, 15, 30, 10, 0];
 
 const getSegmentAngles = (weights) => {
-  const total = weights.reduce((a, b) => a + b, 0);
+  const totalWeight = weights.reduce((a, b) => a + b, 0);
   const angles = [];
   let startAngle = 0;
 
   for (let i = 0; i < weights.length; i++) {
-    const portion = (weights[i] / total) * 360;
+    const portion = weights[i] > 0 ? (weights[i] / totalWeight) * 360 : 360 / segments.length;
     angles.push({
       index: i,
       startAngle,
@@ -31,18 +31,20 @@ const getSegmentAngles = (weights) => {
 const segmentAngles = getSegmentAngles(weights);
 
 const getWeightedRandomIndex = () => {
-  const totalWeight = weights.reduce((acc, weight) => acc + weight, 0);
-  const randomNum = Math.random() * totalWeight;
+  const validSegments = weights
+    .map((weight, index) => ({ index, weight }))
+    .filter(({ weight }) => weight > 0);
 
-  let cumulativeWeight = 0;
-  for (let i = 0; i < weights.length; i++) {
-    cumulativeWeight += weights[i];
-    if (randomNum < cumulativeWeight) {
-      return i;
-    }
+  const totalWeight = validSegments.reduce((sum, seg) => sum + seg.weight, 0);
+  const rand = Math.random() * totalWeight;
+
+  let cumulative = 0;
+  for (let { index, weight } of validSegments) {
+    cumulative += weight;
+    if (rand < cumulative) return index;
   }
 
-  return weights.length - 1;
+  return validSegments[validSegments.length - 1].index;
 };
 
 const WheelOfFortune = () => {
@@ -76,9 +78,8 @@ const WheelOfFortune = () => {
     setSelectedSegment(winningSegment);
     localStorage.setItem('winningSegment', winningSegment);
 
-    const fullSpins = 12;
-    // Виправлення: використовуємо startAngle для правильного позиціонування виграшного сегмента
-    const targetAngle = fullSpins * 360 - segmentAngles[winningIndex].startAngle;
+    const fullSpins = 10;
+    const targetAngle = fullSpins * 360 - segmentAngles[winningIndex].midAngle;
 
     setRotation(targetAngle);
     setHasSpun(true);
@@ -90,39 +91,44 @@ const WheelOfFortune = () => {
 
   return (
     <div className='back'>
-      <div className='name'><h1>PERFUMS BAR</h1></div>
+      <div className='click' onClick={handleSpin}>
+        <div className='name'><h1>PERFUMS BAR</h1></div>
 
-      <div className="wheel-container">
-        <div className="wheel-wrapper">
-          <button className='logo1' onClick={handleSpin} disabled={isSpinning || hasSpun}>
-            <img src={logo} alt="Логотип" />
-          </button>
-          <div className="arrow"></div>
-          <div
-            className="wheel"
-            style={{
-              transform: `rotate(${rotation}deg)`,
-              transition: isSpinning ? 'transform 4s ease-out' : 'none'
-            }}
-          >
-            {segments.map((segment, index) => (
-              <div key={index} className={`segment segment-${index}`}>
-                <div className="segment-inner">
-                  <span>{segment}</span>
+        <div className="wheel-container">
+          <div className="wheel-wrapper">
+            <button className='logo1' onClick={handleSpin} disabled={isSpinning || hasSpun}>
+              <img src={logo} alt="Логотип" />
+            </button>
+            <div className="arrow"></div>
+            <div
+              className="wheel"
+              style={{
+                transform: `rotate(${rotation}deg)`,
+                transition: isSpinning ? 'transform 4s ease-out' : 'none'
+              }}
+            >
+              {segments.map((segment, index) => (
+                <div key={index} className={`segment segment-${index}`}>
+                  <div className="segment-inner">
+                    <span>{segment}</span>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className="bulbs-container">
-        {Array.from({ length: 12 }).map((_, i) => (
-          <div key={i} className="bulb"></div>
-        ))}
+        <div className="bulbs-container">
+          {Array.from({ length: 12 }).map((_, i) => (
+            <div key={i} className="bulb"></div>
+          ))}
+        </div>
       </div>
     </div>
   );
 };
+
+// Для очищення збереженого виграшу при розробці
+// localStorage.removeItem('winningSegment');
 
 export default WheelOfFortune;
