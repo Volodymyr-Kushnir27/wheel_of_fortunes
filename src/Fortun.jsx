@@ -54,16 +54,27 @@ const WheelOfFortune = () => {
   const [hasSpun, setHasSpun] = useState(false);
 
   useEffect(() => {
-    const savedSegment = localStorage.getItem('winningSegment');
-    if (savedSegment) {
-      const index = segments.indexOf(savedSegment);
-      const segmentData = segmentAngles[index];
+    const savedData = localStorage.getItem('winningSegmentData');
+    if (savedData) {
+      const { segment, timestamp } = JSON.parse(savedData);
 
-      if (segmentData) {
-        const targetAngle = 360 - segmentData.midAngle;
-        setRotation(targetAngle);
-        setSelectedSegment(savedSegment);
-        setHasSpun(true);
+      const now = Date.now();
+      const diff = now - timestamp;
+
+      if (diff < 1 * 60 * 1000) {
+        // Якщо ще не пройшло 24 години
+        const index = segments.indexOf(segment);
+        const segmentData = segmentAngles[index];
+
+        if (segmentData) {
+          const targetAngle = 360 - segmentData.midAngle;
+          setRotation(targetAngle);
+          setSelectedSegment(segment);
+          setHasSpun(true);
+        }
+      } else {
+        // Минуло 24 години → видаляємо збережений виграш
+        localStorage.removeItem('winningSegmentData');
       }
     }
   }, []);
@@ -76,7 +87,12 @@ const WheelOfFortune = () => {
     const winningIndex = getWeightedRandomIndex();
     const winningSegment = segments[winningIndex];
     setSelectedSegment(winningSegment);
-    localStorage.setItem('winningSegment', winningSegment);
+
+    // Зберігаємо виграш і час
+    localStorage.setItem(
+      'winningSegmentData',
+      JSON.stringify({ segment: winningSegment, timestamp: Date.now() })
+    );
 
     const fullSpins = 10;
     const targetAngle = fullSpins * 360 - segmentAngles[winningIndex].midAngle;
@@ -127,8 +143,5 @@ const WheelOfFortune = () => {
     </div>
   );
 };
-
-// Для очищення збереженого виграшу при розробці
-// localStorage.removeItem('winningSegment');
 
 export default WheelOfFortune;
