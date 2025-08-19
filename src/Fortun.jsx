@@ -9,6 +9,9 @@ const segments = [
 
 const weights = [30, 0, 15, 15, 30, 10, 0];
 
+// ❗ тут легко міняєш час блокування
+const SPIN_COOLDOWN_MINUTES = 1; // 1 хвилина (можеш поставити 10 або 60*24 для доби)
+
 const getSegmentAngles = (weights) => {
   const totalWeight = weights.reduce((a, b) => a + b, 0);
   const angles = [];
@@ -54,29 +57,38 @@ const WheelOfFortune = () => {
   const [hasSpun, setHasSpun] = useState(false);
 
   useEffect(() => {
-    const savedData = localStorage.getItem('winningSegmentData');
-    if (savedData) {
-      const { segment, timestamp } = JSON.parse(savedData);
+    const checkStorage = () => {
+      const savedData = localStorage.getItem('winningSegmentData');
+      if (savedData) {
+        const { segment, timestamp } = JSON.parse(savedData);
 
-      const now = Date.now();
-      const diff = now - timestamp;
+        const now = Date.now();
+        const diff = now - timestamp;
 
-      if (diff < 1 * 60 * 1000) {
-        // Якщо ще не пройшло 24 години
-        const index = segments.indexOf(segment);
-        const segmentData = segmentAngles[index];
+        if (diff < SPIN_COOLDOWN_MINUTES * 60 * 1000) {
+          // Ще діє блокування
+          const index = segments.indexOf(segment);
+          const segmentData = segmentAngles[index];
 
-        if (segmentData) {
-          const targetAngle = 360 - segmentData.midAngle;
-          setRotation(targetAngle);
-          setSelectedSegment(segment);
-          setHasSpun(true);
+          if (segmentData) {
+            const targetAngle = 360 - segmentData.midAngle;
+            setRotation(targetAngle);
+            setSelectedSegment(segment);
+            setHasSpun(true);
+          }
+        } else {
+          // Час минув → очищаємо
+          localStorage.removeItem('winningSegmentData');
+          setHasSpun(false);
+          setSelectedSegment(null);
         }
       } else {
-        // Минуло 24 години → видаляємо збережений виграш
-        localStorage.removeItem('winningSegmentData');
+        setHasSpun(false);
+        setSelectedSegment(null);
       }
-    }
+    };
+
+    checkStorage(); // перевірка при завантаженні
   }, []);
 
   const handleSpin = () => {
