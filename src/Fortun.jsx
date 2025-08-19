@@ -10,7 +10,7 @@ const segments = [
 const weights = [30, 0, 15, 15, 30, 10, 0];
 
 // ❗ тут легко міняєш час блокування
-const SPIN_COOLDOWN_MINUTES = 1; // 1 хвилина (можеш поставити 10 або 60*24 для доби)
+const SPIN_COOLDOWN_MINUTES = 10; // 1 хвилина (можеш поставити 10 або 60*24 для доби)
 
 const getSegmentAngles = (weights) => {
   const totalWeight = weights.reduce((a, b) => a + b, 0);
